@@ -35,11 +35,17 @@ class File extends Stream
      */
     public function __construct($path, $mode)
     {
+        $error = null;
+        set_error_handler(function ($severity, $message, $filename, $lineno) use (&$error) {
+            $error = new \ErrorException($message, 0, $severity, $filename, $lineno);
+        }, E_WARNING);
         $stream = fopen($path, $mode);
+        restore_error_handler();
 
-        if (!$stream) {
+        if ($error) {
             throw new ResourceException(
-                "The file \"$path\" could not be opened ($mode)."
+                "The file \"$path\" could not be opened ($mode).",
+                $error
             );
         }
 
