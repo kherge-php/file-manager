@@ -3,6 +3,7 @@
 namespace Test\KHerGe\File;
 
 use KHerGe\File\File;
+use KHerGe\File\Exception\ResourceException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -41,6 +42,16 @@ class FileTest extends TestCase
             file_get_contents($this->file),
             'The file was not used by the stream manager.'
         );
+    }
+
+    /**
+     * Verify that opening a nonexistent file throws
+     * instead of writing a E_WARNING and throwing on `read()`.
+     */
+    public function testOpeningFileThatDoesNotExist()
+    {
+        $this->expectException(ResourceException::class);
+        $this->manager = new File(uniqid('nonexistent-file-'), 'r');
     }
 
     /**
