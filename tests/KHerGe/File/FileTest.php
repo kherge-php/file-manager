@@ -3,6 +3,7 @@
 namespace Test\KHerGe\File;
 
 use KHerGe\File\File;
+use KHerGe\File\Exception\ResourceException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -41,6 +42,15 @@ class FileTest extends TestCase
             file_get_contents($this->file),
             'The file was not used by the stream manager.'
         );
+    }
+
+    /**
+     * Verify that open stream warnings raise exceptions only.
+     */
+    public function testNoSuchFile()
+    {
+        $this->expectException(ResourceException::class);
+        new File('tests/ENOENT', 'r');
     }
 
     /**
