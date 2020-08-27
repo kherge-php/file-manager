@@ -35,7 +35,14 @@ class File extends Stream
      */
     public function __construct($path, $mode)
     {
-        $stream = fopen($path, $mode);
+        $stream = @fopen($path, $mode);
+
+        $fopenError = error_get_last();
+        if ($fopenError) {
+            throw new ResourceException(
+                $fopenError['message']
+            );
+        }
 
         if (!$stream) {
             throw new ResourceException(
